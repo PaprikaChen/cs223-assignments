@@ -3,7 +3,7 @@
  * This program reads songs from a text file into an array
  * Author: Paprika Chen
  * Date: 2023/2/9
- *
+ * 
  */
 
 #include <stdio.h>
@@ -85,15 +85,18 @@ struct song store(char information[128]) {
 void print(struct song* array, int count) {
   printf("Welcome to Dynamic Donna's Danceability Directory.\n\n");
   for (int i = 0; i < count; i ++) {
-    struct song currentS = array[i];
-    printf("%-2d) %-23s artist: %-20s  duration: %d:%s  D: %.3f  E: %.3f  T: %.3f  V: %.3f \n", i, currentS.title, currentS.artist, currentS.durationMin, currentS.durationSec, currentS.danceability, currentS.energy, currentS.tempo, currentS.valence);
+    struct song cur = array[i];
+    printf("%-2d) %-23s artist: %-20s  ", i, cur.title, cur.artist);
+    printf("duration: %d:%s  ", cur.durationMin, cur.durationSec);
+    printf("D: %.3f  E: %.3f  ", cur.danceability, cur.energy);
+    printf("T: %.3f  V: %.3f \n", cur.tempo, cur.valence);
   }
   printf("\n=======================\n");
 }
 
 int main() {
-
-  FILE* infile;
+  
+  FILE* infile; 
   infile = fopen("songlist.csv", "r");
   if (infile == NULL) {
       printf("Error: unable to open file %s\n", "songlist.csv");
@@ -125,7 +128,7 @@ int main() {
     songArray[index] = store(currentString);
     index ++;
   }
-
+  
   fclose(infile);
   print(songArray, amount);
   free(songArray);
