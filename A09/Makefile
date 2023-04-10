@@ -4,6 +4,8 @@ CC=gcc
 
 all: thread_mandelbrot  buddhabrot search
 
+
+
 thread_mandelbrot: thread_mandelbrot.c read_ppm.c write_ppm.c
 	$(CC) -g -Wall -Wvla -Werror -Wno-unused-variable thread_mandelbrot.c read_ppm.c write_ppm.c -o $@ -lm -lpthread
 
