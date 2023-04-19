@@ -1,3 +1,13 @@
+/**
+  * Desc:
+  *  This program keeps track of the total/free/used blocks of malloc memories.
+  * It also calculates the current the amounts of total/free/used memories, and
+  * calculate the percentage of the underutilized memory.
+  * 
+  * Modified: April 18, 2023 by @author Paprika Chen
+  */
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -17,6 +27,44 @@ struct chunk {
 };
 
 void memstats(struct chunk* freelist, void* buffer[], int len) {
+
+  // calculate the number of free blocks and the free memmory
+  struct chunk * node = freelist;
+  int freeBlock = 0;
+  int freeMem = 0;
+  while (node != NULL) {
+    freeBlock ++;
+    freeMem = freeMem + node -> size;
+    node = node -> next;
+  }
+
+  // calculate the usedBlock, used memory, and the unapplicated memory.
+  int usedBlock = 0;
+  int usedMem = 0;
+  int unappli = 0;
+  for (int i = 0; i < len; i ++) {
+    if (buffer[i] != NULL) {
+      usedBlock ++;
+      // jump back to the header to read the memory
+      struct chunk* header = (struct chunk*) ((struct chunk*)buffer[i] - 1);
+      usedMem = usedMem + header -> size;
+      // if there is unused memory
+      if (header->size > header->used) {
+        unappli = unappli + (header->size - header->used);
+      }
+    }
+  }
+
+  // calculate the total memory, the percentage of unutilized, and the total blocks
+  int totalMem = usedMem + freeMem;
+  float underUtil = unappli  / (float)usedMem;
+  int totalBlock = freeBlock + usedBlock;
+
+  printf("Total blocks: %d Free blocks: %d Used blocks: %d\n", totalBlock, freeBlock, usedBlock);
+  printf("Total memory allocated: %d ", totalMem);
+  printf("Free memory: %d Used memory: %d\n", freeMem, usedMem);
+  printf("Underutilized memory: %.2f\n", underUtil);
+
 }
 
 int main ( int argc, char* argv[]) {
